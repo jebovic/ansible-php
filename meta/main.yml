@@ -1,6 +1,6 @@
 galaxy_info:
   author: Jérémy Baumgarth
-  description: Install and configure php-fpm for lamp and lemp stack, add your own pools configurations, and customize all the php.ini config from yaml variables
+  description: "Install and configure php-fpm for lamp and lemp stack, add your own pools configurations, and customize all the php.ini config from yaml variables, also included: composer, newrelic apm, blackfire apm"
   company: Amiral Web
   license: MIT
   min_ansible_version: 2.1
@@ -19,4 +19,8 @@ galaxy_info:
     - php-fpm
     - lamp
     - lemp
+    - composer
+    - blackfire
+    - newrelic
+    - apm
 dependencies: []

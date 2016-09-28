@@ -1,0 +1,29 @@
+---
+
+- name: composer > set php_executable
+  set_fact:
+    php_executable: php
+  when: php_executable is not defined
+
+- name: composer > check current install
+  stat: "path={{ php_composer_path }}"
+  register: php_composer_bin
+
+- name: composer > download installer
+  get_url:
+    url: "{{ php_composer_download_url }}"
+    dest: /tmp/composer-installer.php
+    mode: 0755
+  when: not php_composer_bin.stat.exists
+
+- name: composer > run installer
+  command: >
+    {{ php_executable }} composer-installer.php {% if php_composer_version != '' %} --version={{ php_composer_version }}{% endif %}
+    chdir=/tmp
+  when: not php_composer_bin.stat.exists
+
+- name: composer > move into globally-accessible location
+  shell: >
+    mv /tmp/composer.phar {{ php_composer_path }}
+    creates={{ php_composer_path }}
+  when: not php_composer_bin.stat.exists

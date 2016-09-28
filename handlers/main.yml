@@ -4,3 +4,9 @@
   service:
     name:  php5-fpm
     state: restarted
+
+- name: restart blackfire-agent
+  service:
+    name: blackfire-agent
+    state: restarted
+  when: not blackfire_test_mode

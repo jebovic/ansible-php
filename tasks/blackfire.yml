@@ -1,0 +1,44 @@
+---
+
+- name: blackfire > add key
+  apt_key:
+    url: "{{ php_blackfire_key_url }}"
+    state: present
+
+- name: blackfire > add repo
+  apt_repository:
+    repo: 'deb {{ php_blackfire_package_url }} any main'
+    state: present
+    update_cache: yes
+
+- name: blackfire > install apt packages
+  apt:
+    name: "{{ item }}"
+    state:              latest
+    install_recommends: false
+    update_cache:       yes
+    cache_valid_time:   300
+  with_items:
+    - blackfire-agent
+    - blackfire-php
+  notify:
+    - restart blackfire-agent
+    - restart php-fpm
+
+- name: blackfire > config
+  template:
+    src: "blackfire/{{ item }}.j2"
+    dest: "{{ php_blackfire_directory }}/{{ item }}"
+  with_items:
+    - agent
+  notify:
+    - restart blackfire-agent
+    - restart php-fpm
+
+- name: blackfire > service start
+  service:
+    name: "{{ item }}"
+    state: started
+  with_items:
+    - blackfire-agent
+  when: not blackfire_test_mode

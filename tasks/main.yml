@@ -37,6 +37,15 @@
   notify:
     - restart php-fpm
 
+- include: composer.yml
+  when: php_composer_enabled
+
+- include: blackfire.yml
+  when: php_blackfire_enabled
+
+- include: newrelic.yml
+  when: php_newrelic_enabled
+
 - name: enable modules
   shell: "/usr/sbin/php5enmod {{ item }}"
   with_items:
