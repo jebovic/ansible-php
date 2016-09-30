@@ -1,6 +1,8 @@
 php
 ===
 
+[![Build Status](https://travis-ci.org/jebovic/ansible-php.svg?branch=master)](https://travis-ci.org/jebovic/ansible-php)
+
 Install and configure php-fpm for lamp and lemp stack, add your own pools configurations, and customize all the php.ini config from yaml variables
 
 Role Variables
