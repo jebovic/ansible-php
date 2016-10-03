@@ -1,7 +1,7 @@
 php
 ===
 
-[![Build Status](https://travis-ci.org/jebovic/ansible-php.svg?branch=master)](https://travis-ci.org/jebovic/ansible-php)
+[![Build Status](https://travis-ci.org/jebovic/ansible-php.svg?branch=master)](https://travis-ci.org/jebovic/ansible-php) [![Ansible Galaxy](https://img.shields.io/badge/galaxy-jebovic.php-blue.svg?style=flat)](https://galaxy.ansible.com/jebovic/php)
 
 Install and configure php-fpm for lamp and lemp stack, add your own pools configurations, and customize all the php.ini config from yaml variables
 
