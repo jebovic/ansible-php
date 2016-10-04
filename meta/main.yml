@@ -16,7 +16,7 @@ galaxy_info:
       - jessie
   galaxy_tags:
     - php
-    - php-fpm
+    - php_fpm
     - lamp
     - lemp
     - composer
