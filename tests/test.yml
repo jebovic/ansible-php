@@ -4,4 +4,4 @@
   roles:
     - role_under_test
   vars:
-    blackfire_test_mode: true
+    php_blackfire_test_mode: true

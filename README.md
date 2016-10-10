@@ -9,30 +9,37 @@ Role Variables
 --------------
 
 ```
+# use ondrej php repository
+php_use_custom_repository: yes
+php_custom_repository: ppa:ondrej/php
+
 # Choose packages to install
 php_packages:
-  - php5-fpm
-  - php5-cli
-  - php5-common
-  - php5-imagick
-  - php5-intl
-  - php5-memcached
-  - php5-mysql
-  - php5-redis
-  - php5-curl
-  - php5-json
-  - php5-gd
-  - php5-xsl
-  - php5-mongo
-  - php-apc
-  - newrelic-php5
+  - php7.0-fpm
+  - php7.0-cli
+  - php7.0-common
+  - php7.0-dev
+  - php7.0-opcache
+  - php7.0-mbstring
+  - php7.0-gd
+  - php-gmagick
+  - php7.0-intl
+  - php7.0-memcached
+  - php7.0-mysql
+  - php7.0-redis
+  - php7.0-curl
+  - php7.0-json
+  - php7.0-gd
+  - php7.0-xsl
+  - php7.0-xml
+  - php7.0-mongodb
 
 # Define your own pools
 php_pools:
   www:
     user: "www-data"
     group: "www-data"
-    listen: "/var/run/php5-fpm.sock"
+    listen: "/var/run/php-fpm.sock"
     listen.owner: "www-data"
     listen.group: "www-data"
     listen.allowed_clients: "127.0.0.1"
@@ -47,14 +54,26 @@ php_pools:
 # Custom php.ini configs
 php_ini_custom:
   opcache:
-    opcache.blacklist_filename: /etc/php5/fpm/opcache.blacklist
+    opcache.blacklist_filename: "{{ php_fpm_root_dir }}/fpm/opcache.blacklist"
+  newrelic:
+    newrelic.enabled: "true"
+    newrelic.license: "REPLACE IT WITH YOUR KEY"
+    newrelic.logfile: "/var/log/newrelic/php_agent.log"
+    newrelic.appname: "{{ ansible_hostname|default('VM Test') }}"
+    newrelic.daemon.logfile: "/var/log/newrelic/newrelic-daemon.log"
+    newrelic.daemon.port: "/tmp/.newrelic.sock"
+    newrelic.daemon.location: "/usr/bin/newrelic-daemon"
+    newrelic.daemon.collector_host: "collector.newrelic.com"
+    newrelic.analytics_events.enabled: "true"
 
 # Opcache blacklist
 php_opcache_blacklist: []
 
 # Php FPM basic configuration
+php_fpm_root_dir: /etc/php/7.0/fpm
+php_fpm_daemon: php7.0-fpm
 php_fpm_pid: /run/php5-fpm.pid
-php_fpm_error_log: /var/log/php5-fpm.log
+php_fpm_error_log: /var/log/php-fpm.log
 php_fpm_syslog_facility: daemon
 php_fpm_syslog_ident: php-fpm
 php_fpm_log_level: notice
@@ -68,7 +87,44 @@ php_fpm_rlimit_files: 1024
 php_fpm_rlimit_core: 0
 php_fpm_events_mechanism: epoll
 php_fpm_systemd_interval: 10
-php_fpm_pools_include: /etc/php5/fpm/pool.d/*.conf
+php_fpm_pools_include: "{{ php_fpm_root_dir }}/fpm/pool.d/*.conf"
+
+# Enable extras
+php_blackfire_enabled: true
+php_composer_enabled: true
+php_newrelic_enabled: true
+
+# BLackfire.io configuration
+php_blackfire_test_mode: false
+php_blackfire_key_url: https://packagecloud.io/gpg.key
+php_blackfire_package_url: http://packages.blackfire.io/debian
+php_blackfire_directory: /etc/blackfire
+php_blackfire_packages:
+    - blackfire-agent
+    - blackfire-php
+
+# Blackfire agent configuration
+php_blackfire_cert:                                          # Sets the PEM encoded certicates
+php_blackfire_collector: https://blackfire.io                # Sets the URL of Blackfire's data collector
+php_blackfire_http_proxy:                                    # Sets the http proxy to use
+php_blackfire_https_proxy:                                   # Sets the https proxy to use
+php_blackfire_log_file: stderr                               # Sets the path of the log file. Use stderr to log to stderr
+php_blackfire_log_level: 1                                   # log verbosity level (4: debug, 3: info, 2: warning, 1: error)
+php_blackfire_server_id: "REPLACE_IT_WITH_YOUR_KEY"          # Sets the server id used to authenticate with Blackfire API
+php_blackfire_server_token: "REPLACE_IT_WITH_YOUR_KEY"       # Sets the server token used to authenticate with Blackfire API. It is unsafe to set this from the command line
+php_blackfire_socket: "unix:///var/run/blackfire/agent.sock" # Sets the socket the agent should read traces from. Possible value can be a unix socket or a TCP address
+php_blackfire_spec:                                          # Sets the path to the json specifications file
+
+# Composer configuration
+php_composer_download_url: https://getcomposer.org/installer
+php_composer_path: /usr/local/bin/composer
+php_composer_version: ''
+
+# Newrelic APM configuration
+php_newrelic_apt_key_url: https://download.newrelic.com/548C16BF.gpg
+php_newrelic_apt_url: http://apt.newrelic.com/debian/
+php_newrelic_packages:
+  - newrelic-php5
 ```
 
 Example Playbook

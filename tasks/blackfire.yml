@@ -18,9 +18,7 @@
     install_recommends: false
     update_cache:       yes
     cache_valid_time:   300
-  with_items:
-    - blackfire-agent
-    - blackfire-php
+  with_items: "{{ php_blackfire_packages }}"
   notify:
     - restart blackfire-agent
     - restart php-fpm
@@ -41,4 +39,4 @@
     state: started
   with_items:
     - blackfire-agent
-  when: not blackfire_test_mode
+  when: not php_blackfire_test_mode

@@ -1,5 +1,12 @@
 ---
 
+- name: add repo
+  apt_repository:
+    repo: "{{ php_custom_repository }}"
+    state: present
+    update_cache: yes
+  when: php_use_custom_repository
+
 - name: install apt packages
   apt:
     name:  "{{ item }}"
@@ -9,10 +16,21 @@
     cache_valid_time:   300
   with_items: "{{ php_packages }}"
 
+- name: list default pools
+  shell: "ls -1 {{ php_fpm_root_dir }}/fpm/pool.d"
+  register: default_pools
+
+- name: delete default pools
+  file:
+    path: "{{ php_fpm_root_dir }}/fpm/pool.d/{{ item }}"
+    state: absent
+  with_items: "{{ default_pools.stdout_lines }}"
+  when: item != "pools.conf"
+
 - name: config
   template:
     src: "{{ item }}.j2"
-    dest: "/etc/php5/fpm/{{ item }}"
+    dest: "{{ php_fpm_root_dir }}/fpm/{{ item }}"
   with_items:
     - php.ini
     - php-fpm.conf
@@ -24,14 +42,14 @@
 - name: config CLI
   template:
     src: "{{ item }}.j2"
-    dest: "/etc/php5/cli/{{ item }}"
+    dest: "{{ php_fpm_root_dir }}/cli/{{ item }}"
   with_items:
     - php.ini
 
 - name: modules config
   template:
     src: "{{ item }}.j2"
-    dest: "/etc/php5/mods-available/{{ item }}"
+    dest: "{{ php_fpm_root_dir }}/mods-available/{{ item }}"
   with_items:
     - custom.ini
   notify:
@@ -47,7 +65,7 @@
   when: php_newrelic_enabled
 
 - name: enable modules
-  shell: "/usr/sbin/php5enmod {{ item }}"
+  shell: "/usr/sbin/phpenmod {{ item }}"
   with_items:
     - newrelic
     - custom
@@ -59,4 +77,4 @@
     name:  "{{ item }}"
     state: started
   with_items:
-    - php5-fpm
+    - php7.0-fpm
