@@ -9,9 +9,12 @@ Role Variables
 --------------
 
 ```
-# use ondrej php repository
+# use custom repository
 php_use_custom_repository: yes
-php_custom_repository: ppa:ondrej/php
+php_custom_repositories_key_url: https://www.dotdeb.org/dotdeb.gpg
+php_custom_repositories:
+  - deb http://packages.dotdeb.org jessie all
+  - deb-src http://packages.dotdeb.org jessie all
 
 # Choose packages to install
 php_packages:
@@ -21,18 +24,17 @@ php_packages:
   - php7.0-dev
   - php7.0-opcache
   - php7.0-mbstring
-  - php7.0-gd
-  - php-gmagick
-  - php7.0-intl
+#  - php7.0-gd
+#  - php7.0-intl
   - php7.0-memcached
   - php7.0-mysql
   - php7.0-redis
   - php7.0-curl
   - php7.0-json
-  - php7.0-gd
   - php7.0-xsl
   - php7.0-xml
   - php7.0-mongodb
+  - php7.0-imagick
 
 # Define your own pools
 php_pools:
@@ -70,7 +72,7 @@ php_ini_custom:
 php_opcache_blacklist: []
 
 # Php FPM basic configuration
-php_fpm_root_dir: /etc/php/7.0/fpm
+php_fpm_root_dir: /etc/php/7.0
 php_fpm_daemon: php7.0-fpm
 php_fpm_pid: /run/php5-fpm.pid
 php_fpm_error_log: /var/log/php-fpm.log

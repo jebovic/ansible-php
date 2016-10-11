@@ -1,6 +1,6 @@
 ---
 
-# use ondrej php repository
+# use custom repository
 php_use_custom_repository: yes
 php_custom_repositories_key_url: https://www.dotdeb.org/dotdeb.gpg
 php_custom_repositories:
