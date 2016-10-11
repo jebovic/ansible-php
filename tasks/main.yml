@@ -26,6 +26,7 @@
 - name: list default pools
   shell: "ls -1 {{ php_fpm_root_dir }}/fpm/pool.d"
   register: default_pools
+  changed_when: False
 
 - name: delete default pools
   file:
@@ -78,6 +79,7 @@
     - custom
   notify:
     - restart php-fpm
+  changed_when: False
 
 - name: service start
   service:
