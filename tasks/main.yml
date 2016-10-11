@@ -1,10 +1,17 @@
 ---
 
+- name: add key
+  apt_key:
+    url: "{{ php_custom_repositories_key_url }}"
+    state: present
+  when: php_use_custom_repository
+
 - name: add repo
   apt_repository:
-    repo: "{{ php_custom_repository }}"
+    repo: "{{ item }}"
     state: present
     update_cache: yes
+  with_items: "{{ php_custom_repositories }}"
   when: php_use_custom_repository
 
 - name: install apt packages
