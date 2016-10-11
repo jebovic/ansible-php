@@ -25,6 +25,7 @@ php_packages:
   - php7.0-xsl
   - php7.0-xml
   - php7.0-mongodb
+  - php7.0-imagick
 
 # Define your own pools
 php_pools:
