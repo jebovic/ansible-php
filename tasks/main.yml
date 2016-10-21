@@ -85,5 +85,6 @@
   service:
     name:  "{{ item }}"
     state: started
+    enabled: yes
   with_items:
     - php7.0-fpm

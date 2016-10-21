@@ -37,6 +37,7 @@
   service:
     name: "{{ item }}"
     state: started
+    enabled: yes
   with_items:
     - blackfire-agent
   when: not php_blackfire_test_mode
