@@ -65,7 +65,7 @@ php_opcache_blacklist: []
 # Php FPM basic configuration
 php_fpm_root_dir: /etc/php/7.0
 php_fpm_daemon: php7.0-fpm
-php_fpm_pid: /run/php5-fpm.pid
+php_fpm_pid: /run/php-fpm.pid
 php_fpm_error_log: /var/log/php-fpm.log
 php_fpm_syslog_facility: daemon
 php_fpm_syslog_ident: php-fpm
