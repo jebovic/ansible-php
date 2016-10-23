@@ -8,7 +8,7 @@ Install and configure php-fpm for lamp and lemp stack, add your own pools config
 Role Variables
 --------------
 
-```
+```yaml
 # use custom repository
 php_use_custom_repository: yes
 php_custom_repositories_key_url: https://www.dotdeb.org/dotdeb.gpg
@@ -74,7 +74,7 @@ php_opcache_blacklist: []
 # Php FPM basic configuration
 php_fpm_root_dir: /etc/php/7.0
 php_fpm_daemon: php7.0-fpm
-php_fpm_pid: /run/php5-fpm.pid
+php_fpm_pid: /run/php-fpm.pid
 php_fpm_error_log: /var/log/php-fpm.log
 php_fpm_syslog_facility: daemon
 php_fpm_syslog_ident: php-fpm
@@ -97,6 +97,7 @@ php_composer_enabled: true
 php_newrelic_enabled: true
 
 # BLackfire.io configuration
+php_blackfire_daemon: blackfire-agent
 php_blackfire_test_mode: false
 php_blackfire_key_url: https://packagecloud.io/gpg.key
 php_blackfire_package_url: http://packages.blackfire.io/debian
@@ -132,11 +133,20 @@ php_newrelic_packages:
 Example Playbook
 ----------------
 
+```yaml
+- hosts: servers
+  roles:
+     - { role: jebovic.php }
 ```
-    - hosts: servers
-      roles:
-         - { role: jebovic.php }
-```
+
+Tags
+----
+
+* php_blackfire_config : only configure blackfire and restart php and blackfire services
+* php_config : only update config and restart service
+* php_composer : only install coposer
+* php_blackfire : only install, configure and start blackfire service
+* php_newrelic : only add newrelic apm plugin for php
 
 License
 -------

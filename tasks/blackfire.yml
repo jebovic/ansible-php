@@ -32,6 +32,7 @@
   notify:
     - restart blackfire-agent
     - restart php-fpm
+  tags: php_blackfire_config
 
 - name: blackfire > service start
   service:
@@ -39,5 +40,5 @@
     state: started
     enabled: yes
   with_items:
-    - blackfire-agent
+    - "{{ php_blackfire_daemon }}"
   when: not php_blackfire_test_mode

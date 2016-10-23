@@ -88,6 +88,7 @@ php_composer_enabled: true
 php_newrelic_enabled: true
 
 # BLackfire.io configuration
+php_blackfire_daemon: blackfire-agent
 php_blackfire_test_mode: false
 php_blackfire_key_url: https://packagecloud.io/gpg.key
 php_blackfire_package_url: http://packages.blackfire.io/debian
