@@ -5,22 +5,30 @@
     url: "{{ php_custom_repositories_key_url }}"
     state: present
   when: php_use_custom_repository
+  register: php_key_installed
 
 - name: add repo
   apt_repository:
     repo: "{{ item }}"
     state: present
-    update_cache: yes
+    update_cache: no
+  when: php_key_installed|success and php_use_custom_repository
+  register: php_repo_installed
   with_items: "{{ php_custom_repositories }}"
-  when: php_use_custom_repository
+
+- name: update apt cache
+  apt:
+    update_cache:       yes
+  when: php_repo_installed|changed
 
 - name: install apt packages
   apt:
     name:  "{{ item }}"
     state:              latest
-    install_recommends: false
+    install_recommends: no
     update_cache:       yes
-    cache_valid_time:   300
+    cache_valid_time:   86400
+  when: php_repo_installed|success
   with_items: "{{ php_packages }}"
 
 - name: list default pools

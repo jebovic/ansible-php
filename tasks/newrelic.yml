@@ -4,21 +4,27 @@
   apt_key:
     url: "{{ php_newrelic_apt_key_url }}"
     state: present
-  register: gpg_key_installed
+  register: php_newrelic_key_installed
 
 - name: newrelic > add repo
   apt_repository:
     repo: "deb {{ php_newrelic_apt_url }} newrelic non-free"
     state: present
-    update_cache: yes
-  when: gpg_key_installed|success
-  register: newrelic_repo_installed
+    update_cache: no
+  when: php_newrelic_key_installed|success
+  register: php_newrelic_repo_installed
+
+- name: update apt cache
+  apt:
+    update_cache:       yes
+  when: php_newrelic_repo_installed|changed
 
 - name: newrelic > install apt packages
   apt:
     name:  "{{ item }}"
     state:              latest
-    install_recommends: false
+    install_recommends: no
     update_cache:       yes
-    cache_valid_time:   300
+    cache_valid_time:   86400
+  when: php_newrelic_repo_installed|success
   with_items: "{{ php_newrelic_packages }}"

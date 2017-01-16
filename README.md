@@ -5,7 +5,18 @@ php
 
 Install and configure php-fpm for lamp and lemp stack, add your own pools configurations, and customize all the php.ini config from yaml variables
 
+**Bonus** : add extensions for blackfire and newrelic APM
+
 This role is a part of my [OPS project](https://github.com/jebovic/ops), follow this link to see it in action. OPS provides a lot of stuff, like a vagrant file for development VMs, playbooks for roles orchestration, inventory files, examples for roles configuration, ansible configuration file, and many more.
+
+Compatibility
+-------------
+
+Tested and approved on :
+
+* Debian jessie (8+)
+* Ubuntu Trusty (14.04 LTS)
+* Ubuntu Xenial (16.04 LTS)
 
 Role Variables
 --------------
@@ -26,8 +37,6 @@ php_packages:
   - php7.0-dev
   - php7.0-opcache
   - php7.0-mbstring
-#  - php7.0-gd
-#  - php7.0-intl
   - php7.0-memcached
   - php7.0-mysql
   - php7.0-redis
@@ -139,6 +148,49 @@ Example Playbook
 - hosts: servers
   roles:
      - { role: jebovic.php }
+```
+
+Example : config
+----------------
+
+```yaml
+# Define your own pools
+php_pools:
+  my_pool:
+    user: "me"
+    group: "me"
+    listen: "/var/run/php-fpm.sock"
+    listen.owner: "www-data"
+    listen.group: "www-data"
+    listen.allowed_clients: "127.0.0.1"
+    pm: "dynamic"
+    pm.max_children: "10"
+    pm.start_servers: "4"
+    pm.min_spare_servers: "2"
+    pm.max_spare_servers: "6"
+    pm.process_idle_timeout: "300s"
+    pm.max_requests: "300"
+# Custom php config, link it with my other roles, mailhog (mail catcher), memcached, newrelic, blackfire...
+php_ini_custom:
+  Session:
+    session.save_handler: memcached
+    session.save_path: "{{ memcache_listen_address }}:{{ memcache_port }}"
+  mail function:
+    sendmail_from: me@example.com
+    sendmail_path: "{{ mailhog_mhsendmail_path }}"
+  opcache:
+    opcache.enable_cli: Off
+    opcache.blacklist_filename: /etc/php5/fpm/opcache.blacklist
+  newrelic:
+    newrelic.enabled: "true"
+    newrelic.license: "{{ newrelic_license }}"
+    newrelic.logfile: "/var/log/newrelic/php_agent.log"
+    newrelic.appname: "{{ ansible_hostname|default('VM Test') }}"
+    newrelic.daemon.logfile: "/var/log/newrelic/newrelic-daemon.log"
+    newrelic.daemon.port: "/tmp/.newrelic.sock"
+    newrelic.daemon.location: "/usr/bin/newrelic-daemon"
+    newrelic.daemon.collector_host: "collector.newrelic.com"
+    newrelic.analytics_events.enabled: "true"
 ```
 
 Tags
