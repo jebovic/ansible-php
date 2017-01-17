@@ -16,15 +16,15 @@
 
 - name: update apt cache
   apt:
-    update_cache:       yes
+    update_cache: yes
   when: php_newrelic_repo_installed|changed
 
 - name: newrelic > install apt packages
   apt:
-    name:  "{{ item }}"
-    state:              latest
+    name: "{{ item }}"
+    state: latest
     install_recommends: no
-    update_cache:       yes
-    cache_valid_time:   86400
+    update_cache: yes
+    cache_valid_time: 86400
   when: php_newrelic_repo_installed|success
   with_items: "{{ php_newrelic_packages }}"
