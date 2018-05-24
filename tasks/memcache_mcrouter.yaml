@@ -9,3 +9,10 @@
     mode: 0644
   notify: restart php-fpm
 
+- name: enable modules
+  shell: "/usr/sbin/phpenmod {{ item }}"
+  with_items:
+    - memcached
+  notify:
+    - restart php-fpm
+
