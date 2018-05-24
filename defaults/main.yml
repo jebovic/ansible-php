@@ -82,9 +82,9 @@ php_fpm_systemd_interval: 10
 php_fpm_pools_include: "{{ php_fpm_root_dir }}/fpm/pool.d/*.conf"
 
 # Enable extras
-php_blackfire_enabled: true
-php_composer_enabled: true
-php_newrelic_enabled: true
+php_blackfire_enabled: false
+php_composer_enabled: false
+php_newrelic_enabled: flase
 
 # BLackfire.io configuration
 php_blackfire_daemon: blackfire-agent
