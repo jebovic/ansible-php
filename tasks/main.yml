@@ -86,6 +86,10 @@
   when: php_newrelic_enabled
   tags: php_newrelic
 
+- include: memcache_mcrouter.yaml
+  when: php_memcache_mcrouter_enabled
+  tags: php_memcache_mcrouter
+
 - name: enable modules
   shell: "/usr/sbin/phpenmod {{ item }}"
   with_items:
