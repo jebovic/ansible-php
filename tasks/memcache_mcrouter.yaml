@@ -1,3 +1,5 @@
+---
+
 - name: configure memcache for use Facebook_MCrouter
   template:
     src:  php_conf.d/memcached.ini

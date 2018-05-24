@@ -85,7 +85,7 @@ php_fpm_pools_include: "{{ php_fpm_root_dir }}/fpm/pool.d/*.conf"
 php_blackfire_enabled: false
 php_composer_enabled: false
 php_newrelic_enabled: flase
-php_memcache_mcrouter: false
+php_memcache_mcrouter_enabled: false
 
 # BLackfire.io configuration
 php_blackfire_daemon: blackfire-agent
