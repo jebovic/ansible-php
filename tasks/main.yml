@@ -48,10 +48,10 @@
     src: "{{ item }}.j2"
     dest: "{{ php_fpm_root_dir }}/fpm/{{ item }}"
   with_items:
-    - php.ini
-    - php-fpm.conf
     - opcache.blacklist
     - pool.d/pools.conf
+    - php-fpm.conf
+    - php.ini
   notify:
     - restart php-fpm
   tags: php_config

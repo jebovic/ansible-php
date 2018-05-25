@@ -1,7 +1,8 @@
-php
-===
+Ansible Role: php-fpm 
+======================================
 
-[![Build Status](https://travis-ci.org/jebovic/ansible-php.svg?branch=master)](https://travis-ci.org/jebovic/ansible-php) [![Ansible Galaxy](https://img.shields.io/badge/galaxy-jebovic.php-blue.svg?style=flat)](https://galaxy.ansible.com/jebovic/php)
+[![Build Status](https://travis-ci.org/entercloudsuite/ansible-php-fpm.svg?branch=master)](https://travis-ci.org/entercloudsuite/ansible-php-fpm)
+[![Galaxy](https://img.shields.io/badge/galaxy-entercloudsuite.php-fpm-blue.svg?style=flat-square)](https://galaxy.ansible.com/entercloudsuite/php-fpm)  
 
 Install and configure php-fpm for lamp and lemp stack, add your own pools configurations, and customize all the php.ini config from yaml variables
 
