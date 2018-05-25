@@ -1,0 +1,42 @@
+---
+- name: run the main role
+  hosts: all
+  roles:
+    - role: ansible-php-fpm
+      php_blackfire_enabled: false
+      php_composer_enabled: false
+      php_newrelic_enabled: false
+      php_memcache_mcrouter_enabled: true
+      php_use_custom_repository: yes
+      php_version: 7.2
+      php_custom_repositories:
+        - ppa:ondrej/php
+      php_packages:
+        - php{{php_version}}-fpm
+        - php{{php_version}}-cli
+        - php{{php_version}}-common
+        - php{{php_version}}-json
+        - php{{php_version}}-mbstring
+        - php{{php_version}}-mysql
+        - php{{php_version}}-opcache
+        - php{{php_version}}-readline
+        - php{{php_version}}-xml
+      php_pools:
+        www:
+          user: "www-data"
+          group: "www-data"
+          listen: "/run/php/php{{php_version}}-fpm.sock"
+          listen.owner: "www-data"
+          listen.group: "www-data"
+          listen.allowed_clients: "127.0.0.1"
+          pm: "dynamic"
+          pm.max_children: "10"
+          pm.start_servers: "4"
+          pm.min_spare_servers: "2"
+          pm.max_spare_servers: "6"
+          pm.process_idle_timeout: "300s"
+          pm.max_requests: "300"
+      php_ini_custom:
+        session:
+          session.save_handler: memcached
+          session.save_path: "mymecache_address:11211"
