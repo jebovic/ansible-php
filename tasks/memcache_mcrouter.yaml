@@ -1,0 +1,17 @@
+---
+
+- name: configure memcache for use Facebook_MCrouter
+  template:
+    src: php_conf.d/memcached.ini
+    dest: /etc/php/{{php_version}}/mods-available/memcached.ini
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart php-fpm
+
+- name: enable modules
+  shell: "/usr/sbin/phpenmod {{ item }}"
+  with_items:
+    - memcached
+  notify:
+    - restart php-fpm

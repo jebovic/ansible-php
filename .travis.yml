@@ -1,41 +1,19 @@
-env:
-  - distro: debianjessie
-    init: "/sbin/init"
-    run_opts: ""
-    playbook: test.yml
-  - distro: ubuntuxenial
-    init: "/sbin/init"
-    run_opts: ""
-    playbook: test.yml
+---
+
+language: python
+python: 2.7
+sudo: required
 
 services:
   - docker
 
-before_install:
-  - docker pull jebovic/${distro}-ansible:latest
+# Install requirements
+install:
+  - pip install tox-travis
 
+# Test all the scenarios against the Ansible versions defined in the tox.ini file
 script:
-  # run container
-  - container_id=$(mktemp)
-  - docker run --detach --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro -p 80:80 --volume="${PWD}":/etc/ansible/roles/role_under_test:ro ${run_opts} jebovic/${distro}-ansible:latest "${init}" > "${container_id}"
-  # syntax checking
-  - docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/${playbook} --syntax-check
-  # test role
-  - docker exec "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/${playbook}
-  # test role idempotence
-  - idempotence=$(mktemp)
-  - docker exec "$(cat ${container_id})" ansible-playbook /etc/ansible/roles/role_under_test/tests/${playbook} | tee -a ${idempotence}
-  - >
-    tail ${idempotence}
-    | grep -q 'changed=0.*failed=0'
-    && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && exit 1)
-  # test role tasks
-  - docker exec "$(cat ${container_id})" php -v
-  - docker exec "$(cat ${container_id})" php -m
-  - docker exec "$(cat ${container_id})" php -i
+  - tox
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
-  slack:
-    secure: iI2myioekPqZIk2Q1CgKtd3Uj+vrMRr4ijLjkBNKGKVX/UKqhfBc6DvS3TsJKIcKSv3mZea2BthpXBnTOWQm6lTVJm6GaP/TW1IBcjicwp5sS/DG5t7mupeOAjddDoys0qXCMFeDnMr/1pPCuh1gG53ca97TpcjBMq0dh1RIBeTjw116W5qXmX5JhVJ65P0x0CQfeU1bViMkE7bp/9yKtgOEzIwZtXYp/kxIxTpPhTIa9Vg2SxvLoYrW8IvuzJJnaDsu//M0luBX8B5m4MVyeIt4aDncXqDsfA9g+ywUAxHPYeONAH3nxRxqWwBnAebs2pWtYoyT5dJN1q1rtHDPTm2YyJxqVbA/4mI9JRoWq4JheMOxLPPHoXC1WulnBzu8f888M3X41vaUqDbVK9cujzidy4xtAPyFa438QhTMewEq6WBMuAmQFmOYsJxB3C69L8Y1gWJ7Qosok4xoEguDbO1ga7H9dIM5gi9Z1eq102oLirBg5uY8y1EL11pRAMIAU0MXv4FL85p6seY7fgHtMsl2yTgSqpuvSHDlOaiR+5YpXkEslep0FMMNbv1PpiniE0PwROoSM6aYIOifbQvLDV+kGWULg36XkzMGciLu45J8bu8PlvOuHzNZVgJmR11lnLyyiM9YueEVYUciRDH1OsPfbVRsHQxdG+0GJTcK8Tg=

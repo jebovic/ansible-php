@@ -8,24 +8,23 @@ php_custom_repositories:
   - deb-src http://packages.dotdeb.org jessie all
 
 # Choose packages to install
+php_version: 7.2
 php_packages:
-  - php7.0-fpm
-  - php7.0-cli
-  - php7.0-common
-  - php7.0-dev
-  - php7.0-opcache
-  - php7.0-mbstring
-#  - php7.0-gd
-#  - php7.0-intl
-  - php7.0-memcached
-  - php7.0-mysql
-  - php7.0-redis
-  - php7.0-curl
-  - php7.0-json
-  - php7.0-xsl
-  - php7.0-xml
-  - php7.0-mongodb
-  - php7.0-imagick
+  - php{{php_version}}-fpm
+  - php{{php_version}}-cli
+  - php{{php_version}}-common
+  - php{{php_version}}-dev
+  - php{{php_version}}-opcache
+  - php{{php_version}}-mbstring
+  - php{{php_version}}-memcached
+  - php{{php_version}}-mysql
+  - php{{php_version}}-redis
+  - php{{php_version}}-curl
+  - php{{php_version}}-json
+  - php{{php_version}}-xsl
+  - php{{php_version}}-xml
+  - php{{php_version}}-mongodb
+  - php{{php_version}}-imagick
 
 # Define your own pools
 php_pools:
@@ -63,8 +62,8 @@ php_ini_custom:
 php_opcache_blacklist: []
 
 # Php FPM basic configuration
-php_fpm_root_dir: /etc/php/7.0
-php_fpm_daemon: php7.0-fpm
+php_fpm_root_dir: /etc/php/{{php_version}}
+php_fpm_daemon: php{{php_version}}-fpm
 php_fpm_pid: /run/php-fpm.pid
 php_fpm_error_log: /var/log/php-fpm.log
 php_fpm_syslog_facility: daemon
@@ -83,9 +82,10 @@ php_fpm_systemd_interval: 10
 php_fpm_pools_include: "{{ php_fpm_root_dir }}/fpm/pool.d/*.conf"
 
 # Enable extras
-php_blackfire_enabled: true
-php_composer_enabled: true
-php_newrelic_enabled: true
+php_blackfire_enabled: false
+php_composer_enabled: false
+php_newrelic_enabled: flase
+php_memcache_mcrouter_enabled: false
 
 # BLackfire.io configuration
 php_blackfire_daemon: blackfire-agent
@@ -94,20 +94,30 @@ php_blackfire_key_url: https://packagecloud.io/gpg.key
 php_blackfire_package_url: http://packages.blackfire.io/debian
 php_blackfire_directory: /etc/blackfire
 php_blackfire_packages:
-    - blackfire-agent
-    - blackfire-php
+  - blackfire-agent
+  - blackfire-php
 
 # Blackfire agent configuration
-php_blackfire_cert: # Sets the PEM encoded certicates
-php_blackfire_collector: https://blackfire.io                # Sets the URL of Blackfire's data collector
-php_blackfire_http_proxy: # Sets the http proxy to use
-php_blackfire_https_proxy: # Sets the https proxy to use
-php_blackfire_log_file: stderr                               # Sets the path of the log file. Use stderr to log to stderr
-php_blackfire_log_level: 1                                   # log verbosity level (4: debug, 3: info, 2: warning, 1: error)
-php_blackfire_server_id: "REPLACE_IT_WITH_YOUR_KEY"          # Sets the server id used to authenticate with Blackfire API
-php_blackfire_server_token: "REPLACE_IT_WITH_YOUR_KEY"       # Sets the server token used to authenticate with Blackfire API. It is unsafe to set this from the command line
-php_blackfire_socket: "unix:///var/run/blackfire/agent.sock" # Sets the socket the agent should read traces from. Possible value can be a unix socket or a TCP address
-php_blackfire_spec: # Sets the path to the json specifications file
+php_blackfire_cert:
+# Sets the PEM encoded certicates
+php_blackfire_collector: https://blackfire.io
+# Sets the URL of Blackfire's data collector
+php_blackfire_http_proxy:
+# Sets the http proxy to use
+php_blackfire_https_proxy:
+# Sets the https proxy to use
+php_blackfire_log_file: stderr
+# Sets the path of the log file. Use stderr to log to stderr
+php_blackfire_log_level: 1
+# log verbosity level (4: debug, 3: info, 2: warning, 1: error)
+php_blackfire_server_id: "REPLACE_IT_WITH_YOUR_KEY"
+# Sets the server id used to authenticate with Blackfire API
+php_blackfire_server_token: "REPLACE_IT_WITH_YOUR_KEY"
+# Sets the server token used to authenticate with Blackfire API. It is unsafe to set this from the command line
+php_blackfire_socket: "unix:///var/run/blackfire/agent.sock"
+# Sets the socket the agent should read traces from. Possible value can be a unix socket or a TCP address
+php_blackfire_spec:
+# Sets the path to the json specifications file
 
 # Composer configuration
 php_composer_download_url: https://getcomposer.org/installer

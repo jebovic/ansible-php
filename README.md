@@ -1,7 +1,8 @@
-php
-===
+Ansible Role: php-fpm 
+======================================
 
-[![Build Status](https://travis-ci.org/jebovic/ansible-php.svg?branch=master)](https://travis-ci.org/jebovic/ansible-php) [![Ansible Galaxy](https://img.shields.io/badge/galaxy-jebovic.php-blue.svg?style=flat)](https://galaxy.ansible.com/jebovic/php)
+[![Build Status](https://travis-ci.org/entercloudsuite/ansible-php-fpm.svg?branch=master)](https://travis-ci.org/entercloudsuite/ansible-php-fpm)
+[![Galaxy](https://img.shields.io/badge/galaxy-entercloudsuite.php-fpm-blue.svg?style=flat-square)](https://galaxy.ansible.com/entercloudsuite/php-fpm)  
 
 Install and configure php-fpm for lamp and lemp stack, add your own pools configurations, and customize all the php.ini config from yaml variables
 
@@ -28,24 +29,29 @@ php_custom_repositories_key_url: https://www.dotdeb.org/dotdeb.gpg
 php_custom_repositories:
   - deb http://packages.dotdeb.org jessie all
   - deb-src http://packages.dotdeb.org jessie all
+# Use a ppa REPO
+php_custom_repositories:
+  - ppa:ondrej/php
 
+# Or Choose a version and set php_version variables
 # Choose packages to install
+php_version: 7.2
 php_packages:
-  - php7.0-fpm
-  - php7.0-cli
-  - php7.0-common
-  - php7.0-dev
-  - php7.0-opcache
-  - php7.0-mbstring
-  - php7.0-memcached
-  - php7.0-mysql
-  - php7.0-redis
-  - php7.0-curl
-  - php7.0-json
-  - php7.0-xsl
-  - php7.0-xml
-  - php7.0-mongodb
-  - php7.0-imagick
+  - php{{php_version}}-fpm
+  - php{{php_version}}-cli
+  - php{{php_version}}-common
+  - php{{php_version}}-dev
+  - php{{php_version}}-opcache
+  - php{{php_version}}-mbstring
+  - php{{php_version}}-memcached
+  - php{{php_version}}-mysql
+  - php{{php_version}}-redis
+  - php{{php_version}}-curl
+  - php{{php_version}}-json
+  - php{{php_version}}-xsl
+  - php{{php_version}}-xml
+  - php{{php_version}}-mongodb
+  - php{{php_version}}-imagick
 
 # Define your own pools
 php_pools:
@@ -139,6 +145,11 @@ php_newrelic_apt_key_url: https://download.newrelic.com/548C16BF.gpg
 php_newrelic_apt_url: http://apt.newrelic.com/debian/
 php_newrelic_packages:
   - newrelic-php5
+
+# Configure php session on memcache wit MCrouter
+# default set to false
+php_memcache_mcrouter_enabled: true
+
 ```
 
 Example Playbook
@@ -192,6 +203,47 @@ php_ini_custom:
     newrelic.daemon.collector_host: "collector.newrelic.com"
     newrelic.analytics_events.enabled: "true"
 ```
+Example2 : use ubuntu PPA and Memcache MCroute
+--------------------
+```yaml
+php_blackfire_enabled: false
+php_composer_enabled: false
+php_newrelic_enabled: false
+php_memcache_mcrouter_enabled: true
+php_use_custom_repository: yes
+php_version: 7.2
+php_custom_repositories:
+  - ppa:ondrej/php
+php_packages:
+  - php{{php_version}}-fpm
+  - php{{php_version}}-cli
+  - php{{php_version}}-common
+  - php{{php_version}}-json
+  - php{{php_version}}-mbstring
+  - php{{php_version}}-mysql
+  - php{{php_version}}-opcache
+  - php{{php_version}}-readline
+  - php{{php_version}}-xml
+php_pools:
+  www:
+    user: "www-data"
+    group: "www-data"
+    listen: "/run/php/php{{php_version}}-fpm.sock"
+    listen.owner: "www-data"
+    listen.group: "www-data"
+    listen.allowed_clients: "127.0.0.1"
+    pm: "dynamic"
+    pm.max_children: "10"
+    pm.start_servers: "4"
+    pm.min_spare_servers: "2"
+    pm.max_spare_servers: "6"
+    pm.process_idle_timeout: "300s"
+    pm.max_requests: "300"
+php_ini_custom:
+  Session:
+    session.save_handler: memcached
+    session.save_path: "{{ memcache_listen_address }}:{{ memcache_port }}"
+```
 
 Tags
 ----
@@ -201,6 +253,36 @@ Tags
 * php_composer : only install coposer
 * php_blackfire : only install, configure and start blackfire service
 * php_newrelic : only add newrelic apm plugin for php
+
+# Testing
+-----
+
+Tests are performed using [Molecule](http://molecule.readthedocs.org/en/latest/).
+
+Install Molecule or use `docker-compose run --rm molecule` to run a local Docker container, based on the [enterclousuite/molecule](https://hub.docker.com/r/fminzoni/molecule/) project, from where you can use `molecule`.
+
+1. Run `molecule create` to start the target Docker container on your local engine.  
+2. Use `molecule login` to log in to the running container.  
+3. Edit the role files.  
+4. Add other required roles (external) in the molecule/default/requirements.yml file.  
+5. Edit the molecule/default/playbook.yml.  
+6. Define infra tests under the molecule/default/tests folder using the goos verifier.  
+7. When ready, use `molecule converge` to run the Ansible Playbook and `molecule verify` to execute the test suite.  
+Note that the converge process starts performing a syntax check of the role.  
+Destroy the Docker container with the command `molecule destroy`.   
+
+To run all the steps with just one command, run `molecule test`. 
+
+In order to run the role targeting a VM, use the playbook_deploy.yml file for example with the following command: `ansible-playbook ansible-prometheus/molecule/default/playbook_deploy.yml -i VM_IP_OR_FQDN, -u ubuntu --private-key private.pem`.  
+
+# Fast Test
+-----
+docker-compose run --rm molecule
+molecule create
+molecule converge
+
+
+
 
 License
 -------

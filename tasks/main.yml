@@ -48,10 +48,10 @@
     src: "{{ item }}.j2"
     dest: "{{ php_fpm_root_dir }}/fpm/{{ item }}"
   with_items:
-    - php.ini
-    - php-fpm.conf
     - opcache.blacklist
     - pool.d/pools.conf
+    - php-fpm.conf
+    - php.ini
   notify:
     - restart php-fpm
   tags: php_config
@@ -85,6 +85,10 @@
 - include: newrelic.yml
   when: php_newrelic_enabled
   tags: php_newrelic
+
+- include: memcache_mcrouter.yaml
+  when: php_memcache_mcrouter_enabled
+  tags: php_memcache_mcrouter
 
 - name: enable modules
   shell: "/usr/sbin/phpenmod {{ item }}"

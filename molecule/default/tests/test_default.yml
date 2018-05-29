@@ -1,0 +1,24 @@
+---
+package:
+  php-fpm:
+    installed: true
+port:
+  tcp:80:
+    listening: true
+    ip:
+      - 0.0.0.0
+service:
+  php-fpm:
+    enabled: true
+    running: true
+user:
+  php-fpm:
+    exists: true
+    groups:
+      - php-fpm
+group:
+  php-fpm:
+    exists: true
+process:
+  php-fpm:
+    running: true
