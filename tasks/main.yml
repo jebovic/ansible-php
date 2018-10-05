@@ -12,24 +12,23 @@
     repo: "{{ item }}"
     state: present
     update_cache: no
-  when: php_key_installed|success and php_use_custom_repository
+  when: php_key_installed is success and php_use_custom_repository
   register: php_repo_installed
   with_items: "{{ php_custom_repositories }}"
 
 - name: update apt cache
   apt:
     update_cache: yes
-  when: php_repo_installed|changed
+  when: php_repo_installed is changed
 
 - name: install apt packages
   apt:
-    name: "{{ item }}"
+    name: "{{ php_packages }}"
     state: latest
     install_recommends: no
     update_cache: yes
     cache_valid_time: 86400
-  when: php_repo_installed|success
-  with_items: "{{ php_packages }}"
+  when: php_repo_installed is success
 
 - name: list default pools
   shell: "ls -1 {{ php_fpm_root_dir }}/fpm/pool.d"
